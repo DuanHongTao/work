@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 import urllib
 import time
+# 是python-jenkins,而不是jenkins，妈蛋的，折腾半天还
 import jenkins
 import datetime
 import os
@@ -11,7 +12,7 @@ server = jenkins.Jenkins('http://10.2.154.223:8080')
 d = server.get_all_jobs()
 
 foldername_time = time.strftime('%Y-%m-%d %H%M%S')
-filepath = 'C:\Users\DHT\Desktop\API_Monitor_Arrange\%s\\' % foldername_time
+filepath = r'C:\Users\DHT\Desktop\API_Monitor_Arrange\%s\\' % foldername_time
 pathexist = os.path.exists(filepath)
 # 自动创建文件夹，判断文件夹是否存在，如果不存在就自动创建
 if not False != pathexist:
@@ -22,7 +23,7 @@ else:
 for i in d:
     # 只回去正式环境的文件
     if 'Formal' in i['name']:
-        # 下载每个Formal job的BugReoirt
+        # 下载每个Formal job的BugReport
         week_BugReport = urllib.urlretrieve('http://10.2.154.223:8080/job/'
                                             + i['name'] +
                                             '/ws/Bug_Report.txt',
@@ -35,14 +36,14 @@ result = os.walk(filepath)
 time_1 = datetime.datetime.now()
 weekago = datetime.timedelta(days=7)
 weektitle = "%s-%s" % ((time_1 - weekago).strftime('%m.%d'), time_1.strftime('%m.%d'))
-print weektitle+"接口监控情况统计\n"
+print(weektitle+"接口监控情况统计\n")
 for a, b, c in result:
     for f in c:
         with open(a+f) as myF:
             # 找到该环境报错次数，打印出来，省的再去Jenkins上看了
             regex = re.findall('所在环境:.+:\d{1,10}?次', myF.read())
             if regex:
-                print f + ':' + regex[0].decode('utf-8')
+                print(f + ':' + regex[0].decode('utf-8'))
             else:
-                print f+"接口本周没有监控到异常".decode('utf-8')
-raw_input(">>>>>>>>>>>>")
+                print(f+"接口本周没有监控到异常".decode('utf-8'))
+input(">>>>>>>>>>>>")
